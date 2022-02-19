@@ -1,7 +1,7 @@
 radioConfig = {
     Controls = {
         Activator = { -- Open/Close Radio
-            Name = "INPUT_REPLAY_START_STOP_RECORDING_SECONDARY", -- Control name
+            Name = "INPUT_SAVE_REPLAY_CLIP", -- Control name
             Key = 170, -- F3
         },
         Secondary = {
