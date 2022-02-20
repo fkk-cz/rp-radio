@@ -23,8 +23,8 @@ local Radio = {
 	Clicks = true, -- Radio clicks
 }
 Radio.Labels = {
-	{ "FRZL_RADIO_HELP", "~s~" .. (radioConfig.Controls.Secondary.Enabled and "~" .. radioConfig.Controls.Secondary.Name .. "~ + ~" .. radioConfig.Controls.Activator.Name .. "~" or "~" .. radioConfig.Controls.Activator.Name .. "~") .. " to hide.~n~~" .. radioConfig.Controls.Toggle.Name .. "~ to turn radio ~g~on~s~.~n~~" .. radioConfig.Controls.Decrease.Name .. "~ or ~" .. radioConfig.Controls.Increase.Name .. "~ to switch frequency~n~~" .. radioConfig.Controls.Input.Name .. "~ to choose frequency~n~~" .. radioConfig.Controls.ToggleClicks.Name .. "~ to ~a~ mic clicks~n~Frequency: ~1~ MHz" },
-	{ "FRZL_RADIO_HELP2", "~s~" .. (radioConfig.Controls.Secondary.Enabled and "~" .. radioConfig.Controls.Secondary.Name .. "~ + ~" .. radioConfig.Controls.Activator.Name .. "~" or "~" .. radioConfig.Controls.Activator.Name .. "~") .. " to hide.~n~~" .. radioConfig.Controls.Toggle.Name .. "~ to turn radio ~r~off~s~.~n~~" .. radioConfig.Controls.Broadcast.Name .. "~ to broadcast.~n~Frequency: ~1~ MHz" },
+	{ "FRZL_RADIO_HELP", "~s~" .. (radioConfig.Controls.Secondary.Enabled and "~" .. radioConfig.Controls.Secondary.Name .. "~ + ~" .. radioConfig.Controls.Activator.Name .. "~" or "~" .. radioConfig.Controls.Activator.Name .. "~") .. " to hide.~n~~" .. radioConfig.Controls.Toggle.Name .. "~ to turn radio ~g~on~s~.~n~~" .. radioConfig.Controls.DecreaseVolume.Name .. "~ or ~" .. radioConfig.Controls.IncreaseVolume.Name .. "~ to adjust volume~n~~".. radioConfig.Controls.Decrease.Name .. "~ or ~" .. radioConfig.Controls.Increase.Name .. "~ to switch frequency~n~~" .. radioConfig.Controls.Input.Name .. "~ to choose frequency~n~~" .. radioConfig.Controls.ToggleClicks.Name .. "~ to ~a~ mic clicks~n~Frequency: ~1~ MHz~n~Volume: ~1~%" },
+	{ "FRZL_RADIO_HELP2", "~s~" .. (radioConfig.Controls.Secondary.Enabled and "~" .. radioConfig.Controls.Secondary.Name .. "~ + ~" .. radioConfig.Controls.Activator.Name .. "~" or "~" .. radioConfig.Controls.Activator.Name .. "~") .. " to hide.~n~~" .. radioConfig.Controls.Toggle.Name .. "~ to turn radio ~r~off~s~.~n~~" .. radioConfig.Controls.DecreaseVolume.Name .. "~ or ~" .. radioConfig.Controls.IncreaseVolume.Name .. "~ to adjust volume~n~~" .. radioConfig.Controls.Broadcast.Name .. "~ to broadcast (Default).~n~Frequency: ~1~ MHz~n~Volume: ~1~%" },
 	{ "FRZL_RADIO_INPUT", "Enter Frequency" },
 }
 local unarmed = GetHashKey('weapon_unarmed')
@@ -517,6 +517,8 @@ Citizen.CreateThread(function()
 			end
 
 			AddTextComponentInteger(radioConfig.Frequency.Current)
+			local radioVolume = exports["pma-voice"]:getRadioVolume()
+			AddTextComponentInteger(math.floor(radioVolume * 100))
 			EndTextCommandDisplayHelp(false, false, false, -1)
 
 			-- Play animation if player is broadcasting to radio
@@ -557,6 +559,31 @@ Citizen.CreateThread(function()
 				else
 					SendNUIMessage({ sound = "audio_off", volume = 0.5})
 					Radio:Remove()
+				end
+			end
+
+			-- Adjust radio volume
+			if (IsControlPressed(0, radioConfig.Controls.IncreaseVolume.Key) or (IsControlPressed(0, 300) and IsUsingKeyboard(0))) and radioVolume < 0.99 then
+				if not radioConfig.Controls.IncreaseVolume.Pressed then
+					radioConfig.Controls.IncreaseVolume.Pressed = true
+					local newVol = radioVolume * 100 + 1
+					exports["pma-voice"]:setRadioVolume(newVol)
+
+					Citizen.SetTimeout(50, function()
+						radioConfig.Controls.IncreaseVolume.Pressed = false
+					end)
+				end
+			end
+
+			if IsControlPressed(0, radioConfig.Controls.DecreaseVolume.Key) and radioVolume > 0.01 then
+				if not radioConfig.Controls.DecreaseVolume.Pressed then
+					radioConfig.Controls.DecreaseVolume.Pressed = true
+					local newVol = radioVolume * 100 - 1
+					exports["pma-voice"]:setRadioVolume(newVol)
+
+					Citizen.SetTimeout(50, function()
+						radioConfig.Controls.DecreaseVolume.Pressed = false
+					end)
 				end
 			end
 

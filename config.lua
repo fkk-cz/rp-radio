@@ -23,6 +23,16 @@ radioConfig = {
             Key = 174, -- Left Arrow
             Pressed = false,
         },
+        IncreaseVolume = {
+            Name = "INPUT_CELLPHONE_UP",
+            Key = 172,
+            Pressed = false
+        },
+        DecreaseVolume = {
+            Name = "INPUT_CELLPHONE_DOWN",
+            Key = 173,
+            Pressed = false
+        },
         Input = { -- Choose Frequency
             Name = "INPUT_FRONTEND_ACCEPT", -- Control name
             Key = 201, -- Enter
