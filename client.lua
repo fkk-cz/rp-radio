@@ -683,7 +683,16 @@ Citizen.CreateThread(function()
 						Citizen.Wait(150)
 					end
 
-					TaskPlayAnim(playerPed, broadcastDictionary, broadcastAnimation, 8.0, 0.0, -1, 49, 0, 0, 0, 0)
+					if not IsPlayerFreeAiming(PlayerId()) then
+						local veh = GetVehiclePedIsIn(PlayerPedId(), false)
+						if DoesEntityExist(veh) then
+							if (GetVehicleModelNumberOfSeats(GetEntityModel(veh)) > 1) then -- Only play broadcast animation for vehicles >= 2 seats
+								TaskPlayAnim(playerPed, broadcastDictionary, broadcastAnimation, 8.0, 0.0, -1, 49, 0, 0, 0, 0)
+							end
+						else
+							TaskPlayAnim(playerPed, broadcastDictionary, broadcastAnimation, 8.0, 0.0, -1, 49, 0, 0, 0, 0)
+						end
+					end
 				elseif not isBroadcasting and isPlayingBroadcastAnim then
 					StopAnimTask(playerPed, broadcastDictionary, broadcastAnimation, -4.0)
 				end
