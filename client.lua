@@ -163,15 +163,13 @@ function Radio:Toggle(toggle)
 
 		StopAnimTask(playerPed, dictionary, animation, 1.0)
 
-		NetworkRequestControlOfEntity(self.Handle)
-
-		while not NetworkHasControlOfEntity(self.Handle) and count < 5000 do
-			Citizen.Wait(0)
-			count = count + 1
+		if NetworkHasControlOfEntity(self.Handle) then
+			DetachEntity(self.Handle, true, false)
+			DeleteEntity(self.Handle)
+		else
+			DetachEntity(self.Handle, true, false)
+			TriggerServerEvent("radio:deleteProp", ObjToNet(self.Handle))
 		end
-
-		DetachEntity(self.Handle, true, false)
-		DeleteEntity(self.Handle)
 	end
 end
 
