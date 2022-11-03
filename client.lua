@@ -163,6 +163,11 @@ function Radio:Toggle(toggle)
 
 		StopAnimTask(playerPed, dictionary, animation, 1.0)
 
+<<<<<<< HEAD
+=======
+		NetworkRequestControlOfEntity(self.Handle)
+
+>>>>>>> 23cc447266dcde42879b6f2ea51780427ddff614
 		if NetworkHasControlOfEntity(self.Handle) then
 			DetachEntity(self.Handle, true, false)
 			DeleteEntity(self.Handle)
