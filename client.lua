@@ -112,8 +112,7 @@ function Radio:Toggle(toggle)
 	if not self.Has or IsEntityDead(playerPed) then
 		self.Open = false
 
-		DetachEntity(self.Handle, true, false)
-		DeleteEntity(self.Handle)
+		LocalPlayer.state:set("propData", nil, true)
 
 		return
 	end
@@ -140,20 +139,21 @@ function Radio:Toggle(toggle)
 	end
 
 	if self.Open then
-		RequestModel(self.Prop)
-
-		while not HasModelLoaded(self.Prop) do
-			Citizen.Wait(150)
-		end
-
-		self.Handle = CreateObject(self.Prop, 0.0, 0.0, 0.0, true, true, false)
+		LocalPlayer.state:set(
+			"propData",
+			{
+				model = self.Prop,
+				boneIndex = self.Bone,
+				offset = vector3(self.Offset.x, self.Offset.y, self.Offset.z),
+				rotation = vector3(self.Rotation.x, self.Rotation.y, self.Rotation.z),
+				rotationOrder = 2
+			},
+			true
+		)
 
 		local bone = GetPedBoneIndex(playerPed, self.Bone)
 
 		SetCurrentPedWeapon(playerPed, unarmed, true)
-		AttachEntityToEntity(self.Handle, playerPed, bone, self.Offset.x, self.Offset.y, self.Offset.z, self.Rotation.x, self.Rotation.y, self.Rotation.z, true, false, false, false, 2, true)
-
-		SetModelAsNoLongerNeeded(self.Handle)
 
 		TaskPlayAnim(playerPed, dictionary, animation, 4.0, -1, -1, 50, 0, false, false, false)
 	else
@@ -163,13 +163,7 @@ function Radio:Toggle(toggle)
 
 		StopAnimTask(playerPed, dictionary, animation, 1.0)
 
-		if NetworkHasControlOfEntity(self.Handle) then
-			DetachEntity(self.Handle, true, false)
-			DeleteEntity(self.Handle)
-		else
-			DetachEntity(self.Handle, true, false)
-			TriggerServerEvent("radio:deleteProp", ObjToNet(self.Handle))
-		end
+		LocalPlayer.state:set("propData", nil, true)
 	end
 end
 
