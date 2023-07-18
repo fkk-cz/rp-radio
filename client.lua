@@ -729,6 +729,10 @@ AddEventHandler("Radio.Set", function(value)
 	Radio.Has = value and true or false
 end)
 
+RegisterNetEvent("Radio.PlaySwitchSound", function ()
+	SendNUIMessage({ sound = "audio_on", volume = 0.3})
+end)
+
 AddEventHandler("Radio.CycleChannel", function(cycleType)
 	if Radio.On then
 		exports["pma-voice"]:SetMumbleProperty("radioEnabled", false)
