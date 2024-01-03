@@ -12,13 +12,13 @@ local Radio = {
 		"cellphone@",
 		"cellphone@in_car@ds",
 		"cellphone@str",
-		"random@arrests",
+		"anim@cop_mic_pose_002",
 	},
 	Animation = {
 		"cellphone_text_in",
 		"cellphone_text_out",
 		"cellphone_call_listen_a",
-		"generic_radio_chatter",
+		"chest_mic",
 	},
 	Clicks = true, -- Radio clicks
 }
